@@ -4,7 +4,7 @@
             <div class="card-title">
                 <span>📑 บัญชีคุมยาอิเล็กทรอนิกส์และประวัติการเคลื่อนไหว (Electronic Stock Card)</span>
             </div>
-            <a href="/hos/inventory" class="btn btn-secondary btn-sm">
+            <a href="/pcc/inventory" class="btn btn-secondary btn-sm">
                 ⬅ กลับไปหน้าคลังยา FEFO
             </a>
         </div>

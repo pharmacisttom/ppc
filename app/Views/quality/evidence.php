@@ -7,7 +7,7 @@
             </p>
         </div>
         <div style="display: flex; gap: 10px;">
-            <a href="/hos/quality" class="btn btn-secondary">
+            <a href="/pcc/quality" class="btn btn-secondary">
                 ⬅ กลับไปหน้าประเมินตนเอง
             </a>
             <button class="btn btn-primary" onclick="alert('ระบบรองรับการอัปโหลดไฟล์ PDF, PNG, JPG, DOCX ขนาดไม่เกิน 20MB พร้อมระบบตรวจสอบความซ้ำซ้อนด้วย SHA-256')">

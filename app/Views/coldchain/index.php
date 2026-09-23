@@ -26,9 +26,16 @@ use App\Core\CSRF;
                                 รหัสครุภัณฑ์: <?= htmlspecialchars($u['unit_code']) ?> • ยี่ห้อ/รุ่น: <?= htmlspecialchars($u['model'] ?? 'มาตรฐานชีววัตถุ') ?>
                             </div>
                         </div>
-                        <span class="badge <?= (int)$u['total_excursions'] > 0 ? 'badge-danger' : 'badge-success' ?>">
-                            <?= (int)$u['total_excursions'] ?> หลุดเกณฑ์สะสม
-                        </span>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <button type="button" class="btn btn-secondary btn-sm" 
+                                    onclick='openEditUnitModal(<?= json_encode($u, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>)'
+                                    style="padding: 3px 8px; font-size: 11.5px; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-weight: 600;">
+                                ✏️ แก้ไขข้อมูลตู้
+                            </button>
+                            <span class="badge <?= (int)$u['total_excursions'] > 0 ? 'badge-danger' : 'badge-success' ?>">
+                                <?= (int)$u['total_excursions'] ?> หลุดเกณฑ์สะสม
+                            </span>
+                        </div>
                     </div>
 
                     <div style="margin-top: 18px; background: #f0fdfa; border: 1px solid #ccfbf1; border-radius: var(--radius-sm); padding: 14px; display: flex; justify-content: space-around; align-items: center; text-align: center;">
@@ -132,7 +139,7 @@ use App\Core\CSRF;
 <!-- Modal: Record Temperature -->
 <div class="modal-backdrop" id="recordTempModal">
     <div class="modal-content">
-        <form action="/hos/cold-chain/store" method="POST">
+        <form action="/pcc/cold-chain/store" method="POST">
             <?= CSRF::field() ?>
             <div class="modal-header">
                 <h3 style="font-size: 17px; font-weight: 700;">🌡️ บันทึกอุณหภูมิตู้เย็นยา Cold Chain</h3>
@@ -214,4 +221,85 @@ function checkExcursion(val) {
         actionInput.required = false;
     }
 }
+
+function openEditUnitModal(u) {
+    document.getElementById('editUnitId').value = u.unit_id || '';
+    document.getElementById('editUnitCode').value = u.unit_code || '';
+    document.getElementById('editUnitName').value = u.unit_name || '';
+    document.getElementById('editMinTemp').value = u.min_temp !== undefined ? u.min_temp : '2.0';
+    document.getElementById('editMaxTemp').value = u.max_temp !== undefined ? u.max_temp : '8.0';
+    document.getElementById('editModelInfo').value = u.model_info || u.model || '';
+    document.getElementById('editUnitActive').value = u.is_active !== undefined ? u.is_active : '1';
+
+    document.getElementById('editUnitModal').style.display = 'flex';
+}
+
+function closeEditUnitModal() {
+    document.getElementById('editUnitModal').style.display = 'none';
+}
 </script>
+
+<!-- Modal Edit Cold Chain Unit -->
+<div id="editUnitModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 9999; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+    <div style="background: white; border-radius: var(--radius-lg); width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-xl); margin: 20px;">
+        <form method="POST" action="/pcc/cold-chain/update-unit">
+            <?= CSRF::field() ?>
+            <input type="hidden" name="unit_id" id="editUnitId">
+
+            <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #0f172a;">
+                        ✏️ แก้ไขข้อมูลตู้เย็น/อุปกรณ์ควบคุมความเย็น
+                    </h3>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+                        🛡️ ทุกการแก้ไขข้อมูลจะถูกบันทึกค่า Log ลงใน audit_logs พร้อม Snapshot อัตโนมัติ
+                    </div>
+                </div>
+                <button type="button" onclick="closeEditUnitModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted);">&times;</button>
+            </div>
+
+            <div style="padding: 24px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">รหัสครุภัณฑ์ / อุปกรณ์ *</label>
+                        <input type="text" name="unit_code" id="editUnitCode" class="form-control" required placeholder="เช่น CC-01">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">สถานะการใช้งาน</label>
+                        <select name="is_active" id="editUnitActive" class="form-control">
+                            <option value="1">เปิดใช้งานปกติ (Active)</option>
+                            <option value="0">ระงับการใช้/ส่งซ่อม (Inactive)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 14px;">
+                    <label class="form-label" style="font-weight: 600;">ชื่อตู้เย็น / ตำแหน่งติดตั้ง *</label>
+                    <input type="text" name="unit_name" id="editUnitName" class="form-control" required placeholder="เช่น ตู้เย็นเก็บวัคซีนหลัก (ห้องยา)">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">อุณหภูมิต่ำสุดที่ยอมรับ (°C)</label>
+                        <input type="number" step="0.1" name="min_temp" id="editMinTemp" class="form-control" value="2.0" required>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label" style="font-weight: 600;">อุณหภูมิสูงสุดที่ยอมรับ (°C)</label>
+                        <input type="number" step="0.1" name="max_temp" id="editMaxTemp" class="form-control" value="8.0" required>
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin: 0;">
+                    <label class="form-label" style="font-weight: 600;">ยี่ห้อ / รุ่น / ข้อมูลทางเทคนิค</label>
+                    <input type="text" name="model_info" id="editModelInfo" class="form-control" placeholder="เช่น Panasonic MPR-414F, Dometic TCX 21">
+                </div>
+            </div>
+
+            <div style="padding: 16px 24px; border-top: 1px solid var(--border-color); background: #f8fafc; border-radius: 0 0 var(--radius-lg) var(--radius-lg); display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeEditUnitModal()">ยกเลิก</button>
+                <button type="submit" class="btn btn-primary btn-sm">💾 บันทึกข้อมูล & Audit Log</button>
+            </div>
+        </form>
+    </div>
+</div>
+

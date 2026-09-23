@@ -13,24 +13,21 @@
                                 <?= htmlspecialchars($patient['full_name']) ?>
                             </h2>
                             <span class="badge badge-secondary">PID <?= (int)$patient['pid'] ?></span>
-                            <?php if ($isTraining): ?>
-                                <span class="badge badge-warning">เคสฝึกอบรมจำลอง</span>
-                            <?php endif; ?>
                         </div>
                         <div style="font-size: 13px; color: var(--text-secondary); margin-top: 4px; display: flex; gap: 16px; flex-wrap: wrap;">
-                            <span><strong>เลข ปชช. (PDPA):</strong> <span style="font-family: monospace;"><?= htmlspecialchars($patient['masked_cid'] ?? '-') ?></span></span>
-                            <span><strong>เพศ/อายุ:</strong> <?= (($patient['sex'] ?? 1) == 1) ? 'ชาย' : 'หญิง' ?> / <?= (int)($patient['age'] ?? 0) ?> ปี (เกิด: <?= htmlspecialchars($patient['birth'] ?? '-') ?>)</span>
-                            <span><strong>กรุ๊ปเลือด:</strong> <?= htmlspecialchars($patient['bloodgroup'] ?? '-') ?></span>
-                            <span><strong>สิทธิ:</strong> <?= htmlspecialchars($patient['right_name'] ?? 'บัตรทอง') ?></span>
+                            <span><strong>เลข ปชช. (PDPA):</strong> <span style="font-family: monospace;"><?= htmlspecialchars($patient['masked_cid'] ?? $patient['cid_masked'] ?? '-') ?></span></span>
+                            <span><strong>เพศ/อายุ:</strong> <?= htmlspecialchars($patient['gender'] ?? ((($patient['sex'] ?? 1) == 1) ? 'ชาย' : 'หญิง')) ?> / <?= (int)($patient['age'] ?? 0) ?> ปี (เกิด: <?= htmlspecialchars($patient['birth_date'] ?? $patient['birth'] ?? '-') ?>)</span>
+                            <span><strong>กรุ๊ปเลือด:</strong> <?= htmlspecialchars($patient['blood_group'] ?? $patient['bloodgroup'] ?: '-') ?></span>
+                            <span><strong>สิทธิ:</strong> <?= htmlspecialchars($patient['right_name'] ?? $patient['right_code'] ?? 'บัตรทอง') ?></span>
                         </div>
                     </div>
                 </div>
 
                 <div style="display: flex; gap: 10px;">
-                    <a href="/hos/reviews/create?pid=<?= (int)$patient['pid'] ?>" class="btn btn-primary">
+                    <a href="/pcc/reviews/create?pid=<?= (int)$patient['pid'] ?>" class="btn btn-primary">
                         <span>📋</span> จัดทำ Medication Review & DRP
                     </a>
-                    <a href="/hos/patients" class="btn btn-secondary">
+                    <a href="/pcc/patients" class="btn btn-secondary">
                         ย้อนกลับ ➔
                     </a>
                 </div>
@@ -42,7 +39,16 @@
                 <?php if (!empty($chronicConditions)): ?>
                     <?php foreach ($chronicConditions as $c): ?>
                         <span class="badge badge-info" style="font-size: 13px; padding: 4px 10px;">
-                            🏥 <?= htmlspecialchars($c['disease_name'] ?? $c['code'] ?? '') ?>
+                            🏥 <?= htmlspecialchars($c['group_name'] ?? $c['disease_name'] ?? $c['chronic_code'] ?? $c['code'] ?? '') ?>
+                        </span>
+                    <?php endforeach; ?>
+                <?php elseif (!empty($patient['chronic_diseases'])): ?>
+                    <?php 
+                        $cds = is_array($patient['chronic_diseases']) ? $patient['chronic_diseases'] : array_filter(array_map('trim', explode(',', (string)$patient['chronic_diseases'])));
+                        foreach ($cds as $cd):
+                    ?>
+                        <span class="badge badge-info" style="font-size: 13px; padding: 4px 10px;">
+                            🏥 <?= htmlspecialchars(is_array($cd) ? ($cd['group_name'] ?? $cd['chronic_code'] ?? '') : $cd) ?>
                         </span>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -133,9 +139,9 @@
                                 <?php foreach ($allergies as $alg): ?>
                                     <tr>
                                         <td><strong style="color: var(--danger);"><?= htmlspecialchars($alg['drug_name']) ?></strong></td>
-                                        <td><?= htmlspecialchars($alg['symptom'] ?? 'ไม่ระบุ') ?></td>
+                                        <td><?= htmlspecialchars($alg['reaction'] ?? $alg['symptom'] ?? 'ไม่ระบุ') ?></td>
                                         <td><span class="badge badge-danger"><?= htmlspecialchars($alg['severity'] ?? 'Moderate') ?></span></td>
-                                        <td style="font-size: 12px;"><?= htmlspecialchars($alg['report_date'] ?? '-') ?></td>
+                                        <td style="font-size: 12px;"><?= htmlspecialchars($alg['date_recorded'] ?? $alg['report_date'] ?? '-') ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>
@@ -179,8 +185,8 @@
                                                 <span class="badge badge-danger" style="margin-left: 4px;">HAM</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td style="font-size: 13px; color: var(--text-secondary);"><?= htmlspecialchars($med['instruction'] ?? $med['usage_text'] ?? '-') ?></td>
-                                        <td><?= htmlspecialchars($med['qty'] ?? $med['quantity'] ?? '-') ?></td>
+                                        <td style="font-size: 13px; color: var(--text-secondary);"><?= htmlspecialchars($med['dose'] ?? $med['instruction'] ?? $med['usage_text'] ?? '-') ?></td>
+                                        <td><?= htmlspecialchars($med['quantity'] ?? $med['qty'] ?? '-') ?></td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>
@@ -241,7 +247,7 @@
             <div class="card-title">
                 <span>📑 ประวัติการทำ Medication Review & DRP ของผู้ป่วยรายนี้</span>
             </div>
-            <a href="/hos/reviews/create?pid=<?= (int)$patient['pid'] ?>" class="btn btn-sm btn-primary">
+            <a href="/pcc/reviews/create?pid=<?= (int)$patient['pid'] ?>" class="btn btn-sm btn-primary">
                 ทำทบทวนยาครั้งใหม่ ➕
             </a>
         </div>
@@ -280,7 +286,7 @@
                                     </td>
                                     <td><span class="badge badge-success"><?= htmlspecialchars($rev['status']) ?></span></td>
                                     <td>
-                                        <a href="/hos/reviews/<?= (int)$rev['review_id'] ?>" class="btn btn-sm btn-secondary">
+                                        <a href="/pcc/reviews/<?= (int)$rev['review_id'] ?>" class="btn btn-sm btn-secondary">
                                             เปิดดู ➔
                                         </a>
                                     </td>

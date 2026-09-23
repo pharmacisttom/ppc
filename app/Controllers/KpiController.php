@@ -36,31 +36,11 @@ class KpiController
      */
     public function rduDashboard(): void
     {
-        // Simulated or Live RDU stats
-        $rduData = [
-            'uri_rate' => 12.5, // Target <= 20% (Passed Green)
-            'uri_antibiotic_visits' => 25,
-            'uri_total_visits' => 200,
-
-            'diarrhea_rate' => 8.3, // Target <= 20% (Passed Green)
-            'diarrhea_antibiotic_visits' => 10,
-            'diarrhea_total_visits' => 120,
-
-            'wound_rate' => 28.0, // Target <= 40% (Passed Green)
-            'wound_antibiotic_visits' => 14,
-            'wound_total_visits' => 50,
-
-            'top_antibiotics' => [
-                ['name' => 'Amoxicillin 500 mg cap', 'prescriptions' => 38, 'percentage' => 77.5],
-                ['name' => 'Ciprofloxacin 500 mg tab', 'prescriptions' => 7, 'percentage' => 14.3],
-                ['name' => 'Norfloxacin 400 mg tab', 'prescriptions' => 4, 'percentage' => 8.2]
-            ]
-        ];
+        $rduData = JhcisGateway::getRduStatistics();
 
         View::render('kpi/rdu', [
             'pageTitle' => 'การใช้ยาอย่างสมเหตุผลและการจัดการยาปฏิชีวนะ (RDU & Antibiotic Stewardship)',
-            'rdu' => $rduData,
-            'isTraining' => JhcisGateway::isTrainingMode()
+            'rdu' => $rduData
         ]);
     }
 }

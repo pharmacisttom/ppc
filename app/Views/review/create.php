@@ -14,14 +14,14 @@ use App\Core\CSRF;
                 </div>
             </div>
             <div>
-                <a href="/hos/patients/<?= (int)$patient['pid'] ?>" class="btn btn-secondary btn-sm">
+                <a href="/pcc/patients/<?= (int)$patient['pid'] ?>" class="btn btn-secondary btn-sm">
                     เปิดดูแฟ้มยาแบบเต็ม ➔
                 </a>
             </div>
         </div>
     </div>
 
-    <form action="/hos/reviews/store" method="POST">
+    <form action="/pcc/reviews/store" method="POST">
         <?= CSRF::field() ?>
         <input type="hidden" name="patient_pid" value="<?= (int)$patient['pid'] ?>">
 
@@ -129,7 +129,7 @@ use App\Core\CSRF;
         </div>
 
         <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
-            <a href="/hos/patients/<?= (int)$patient['pid'] ?>" class="btn btn-secondary">ยกเลิก</a>
+            <a href="/pcc/patients/<?= (int)$patient['pid'] ?>" class="btn btn-secondary">ยกเลิก</a>
             <button type="submit" class="btn btn-primary" style="padding: 10px 28px; font-size: 15px;">
                 💾 บันทึกผลการทบทวนยาและ DRP
             </button>

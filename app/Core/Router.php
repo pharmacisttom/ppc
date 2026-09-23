@@ -34,10 +34,11 @@ class Router
         $parsedUrl = parse_url($uri);
         $cleanPath = $parsedUrl['path'] ?? '/';
         
-        // Strip out subfolder if hosted under /hos
-        $baseFolder = '/hos';
-        if (str_starts_with($cleanPath, $baseFolder)) {
-            $cleanPath = substr($cleanPath, strlen($baseFolder));
+        // Strip out subfolder if hosted under /pcc or /hos
+        if (str_starts_with($cleanPath, '/pcc')) {
+            $cleanPath = substr($cleanPath, 4);
+        } elseif (str_starts_with($cleanPath, '/hos')) {
+            $cleanPath = substr($cleanPath, 4);
         }
         $cleanPath = rtrim($cleanPath, '/') ?: '/';
 
@@ -86,7 +87,7 @@ class Router
         if ($mw === 'auth') {
             if (!Auth::check()) {
                 Session::flash('error', 'กรุณาเข้าสู่ระบบก่อนใช้งาน');
-                Response::redirect('/hos/login');
+                Response::redirect('/pcc/login');
             }
         } elseif ($mw === 'csrf') {
             if (Request::isPost() && !CSRF::validate()) {
@@ -104,6 +105,12 @@ class Router
             if (!Auth::can($perm)) {
                 http_response_code(403);
                 die('403 Forbidden: คุณไม่มีสิทธิ์ในการดำเนินการนี้ (' . htmlspecialchars($perm) . ')');
+            }
+        } elseif (str_starts_with($mw, 'level:')) {
+            $lvl = (int)substr($mw, 6);
+            if (!Auth::canAccessLevel($lvl)) {
+                http_response_code(403);
+                die('403 Forbidden: คุณต้องมีระดับการเข้าถึงตั้งแต่ระดับ ' . $lvl . ' ขึ้นไปจึงจะสามารถเข้าใช้งานส่วนนี้ได้');
             }
         }
     }

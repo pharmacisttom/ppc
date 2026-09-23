@@ -1,10 +1,10 @@
 <div class="review-show-container">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;" class="no-print">
-        <a href="/hos/reviews" class="btn btn-secondary">
+        <a href="/pcc/reviews" class="btn btn-secondary">
             ⬅ ย้อนกลับไปหน้ารายการ
         </a>
         <div style="display: flex; gap: 10px;">
-            <a href="/hos/patients/<?= (int)$review['patient_pid'] ?>" class="btn btn-secondary">
+            <a href="/pcc/patients/<?= (int)$review['patient_pid'] ?>" class="btn btn-secondary">
                 👤 เปิดแฟ้มยาผู้ป่วย
             </a>
             <button onclick="window.print()" class="btn btn-primary">

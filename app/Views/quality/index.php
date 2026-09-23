@@ -11,7 +11,7 @@ use App\Core\CSRF;
                 ระบบประเมินตนเอง (Self-Assessment) และวิเคราะห์ช่องว่างการพัฒนา (Gap Analysis) ด้านระบบยาและเภสัชกรรมปฐมภูมิ
             </p>
         </div>
-        <a href="/hos/quality/evidence" class="btn btn-primary">
+        <a href="/pcc/quality/evidence" class="btn btn-primary">
             📁 ศูนย์รวมหลักฐานเชิงประจักษ์ (Evidence Center) ➔
         </a>
     </div>
@@ -101,7 +101,7 @@ use App\Core\CSRF;
                                             </div>
                                         </td>
                                         <td>
-                                            <a href="/hos/quality/evidence" class="badge badge-info">
+                                            <a href="/pcc/quality/evidence" class="badge badge-info">
                                                 📁 <?= (int)$cr['evidence_count'] ?> ไฟล์หลักฐาน
                                             </a>
                                         </td>
@@ -132,7 +132,7 @@ use App\Core\CSRF;
 <!-- Assessment Update Modal -->
 <div class="modal-backdrop" id="assessModal">
     <div class="modal-content">
-        <form action="/hos/quality/assess" method="POST">
+        <form action="/pcc/quality/assess" method="POST">
             <?= CSRF::field() ?>
             <input type="hidden" name="criterion_id" id="modalCriterionId">
             <div class="modal-header">

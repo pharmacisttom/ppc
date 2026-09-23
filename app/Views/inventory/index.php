@@ -41,7 +41,7 @@
                 <span>📦 คลังยา รพ.สต. และการจัดลำดับจ่ายยาตามวันหมดอายุ (FEFO Engine: First-Expire, First-Out)</span>
             </div>
             <div style="display: flex; gap: 10px;">
-                <a href="/hos/inventory/movements" class="btn btn-secondary btn-sm">
+                <a href="/pcc/inventory/movements" class="btn btn-secondary btn-sm">
                     📜 ตรวจสอบ Stock Card เคลื่อนไหว
                 </a>
             </div>

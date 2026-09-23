@@ -16,11 +16,17 @@ class Audit
         string $actionType,
         string $moduleName,
         ?string $recordId = null,
-        ?int $patientPid = null,
+        $patientPidOrReason = null,
         ?array $before = null,
         ?array $after = null,
         ?string $reason = null
     ): void {
+        $patientPid = null;
+        if (is_numeric($patientPidOrReason)) {
+            $patientPid = (int)$patientPidOrReason;
+        } elseif (is_string($patientPidOrReason) && $reason === null) {
+            $reason = $patientPidOrReason;
+        }
         try {
             $db = Database::getAppDb();
             $userId = Session::get('user_id');

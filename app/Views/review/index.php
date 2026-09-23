@@ -4,7 +4,7 @@
             <div class="card-title">
                 <span>📋 รายการทบทวนวรรณกรรมยาและการจัดการปัญหาจากการใช้ยา (Medication Reviews & DRP)</span>
             </div>
-            <a href="/hos/patients" class="btn btn-primary">
+            <a href="/pcc/patients" class="btn btn-primary">
                 ➕ เริ่มการทบทวนยาใหม่ (เลือกผู้ป่วย)
             </a>
         </div>
@@ -37,7 +37,7 @@
                                     <td><strong>#<?= (int)$r['review_id'] ?></strong></td>
                                     <td><?= htmlspecialchars($r['review_date']) ?></td>
                                     <td>
-                                        <a href="/hos/patients/<?= (int)$r['patient_pid'] ?>" style="font-weight: 600;">
+                                        <a href="/pcc/patients/<?= (int)$r['patient_pid'] ?>" style="font-weight: 600;">
                                             PID <?= (int)$r['patient_pid'] ?>
                                         </a>
                                     </td>
@@ -58,7 +58,7 @@
                                         <span class="badge badge-success"><?= htmlspecialchars($r['status']) ?></span>
                                     </td>
                                     <td>
-                                        <a href="/hos/reviews/<?= (int)$r['review_id'] ?>" class="btn btn-sm btn-secondary">
+                                        <a href="/pcc/reviews/<?= (int)$r['review_id'] ?>" class="btn btn-sm btn-secondary">
                                             📄 ดูรายละเอียด
                                         </a>
                                     </td>

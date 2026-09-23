@@ -16,7 +16,6 @@ class DashboardController
 
         // 1. Check JHCIS Status
         $jhcisConnected = Database::isJhcisConnected();
-        $isTraining = JhcisGateway::isTrainingMode();
 
         // 2. Fetch Stock Expiry Counters from App DB
         $stmtExp = $db->query("
@@ -54,10 +53,17 @@ class DashboardController
         $qualStats = $stmtQual->fetch();
 
         // 5. Total Reviews & Incidents
-        $revCount = $db->query("SELECT COUNT(*) FROM medication_reviews")->fetchColumn();
-        $incCount = $db->query("SELECT COUNT(*) FROM medication_incidents WHERE status != 'closed'")->fetchColumn();
+        $revCount = (int)$db->query("SELECT COUNT(*) FROM medication_reviews")->fetchColumn();
+        $incCount = (int)$db->query("SELECT COUNT(*) FROM medication_incidents WHERE status != 'closed'")->fetchColumn();
+        $nearMissCount = (int)$db->query("SELECT COUNT(*) FROM medication_incidents WHERE is_near_miss = 1 OR severity_category IN ('A', 'B')")->fetchColumn();
 
-        // 6. Recent Audit Logs
+        // 6. Live Dual-Store Summary from JHCIS Database
+        $dualSummary = JhcisGateway::getJhcisDualStoreSummary();
+        $mainStoreVal = (float)($dualSummary['main_store']['value'] ?? 0);
+        $dispensaryVal = (float)($dualSummary['dispensary']['value'] ?? 0);
+        $totalDualVal = (float)($dualSummary['total_value'] ?? 0);
+
+        // 7. Recent Audit Logs
         $auditLogs = $db->query("
             SELECT action_type, module_name, patient_pid, created_at, ip_address 
             FROM audit_logs 
@@ -65,21 +71,24 @@ class DashboardController
             LIMIT 5
         ")->fetchAll();
 
-        // 7. Training Scenario Shortcuts
-        $scenarios = JhcisGateway::getSimulatedPatients();
+        // 8. Comprehensive Public Health & Clinical Analytics (Allergy, G6PD, NCD, CKD, VHV)
+        $analytics = JhcisGateway::getComprehensiveDashboardAnalytics();
 
         View::render('dashboard/index', [
-            'pageTitle' => 'แดชบอร์ดบริหารจัดการด้านยาและเภสัชกรรมปฐมภูมิ',
+            'pageTitle' => 'แดชบอร์ดสารสนเทศสาธารณสุข & ความปลอดภัยด้านยา',
             'user' => $user,
             'jhcisConnected' => $jhcisConnected,
-            'isTraining' => $isTraining,
+            'analytics' => $analytics,
             'stockStats' => $stockStats,
             'coldChainUnits' => $coldChainUnits,
             'qualStats' => $qualStats,
             'reviewCount' => $revCount,
             'openIncidents' => $incCount,
-            'auditLogs' => $auditLogs,
-            'scenarios' => $scenarios
+            'nearMissCount' => $nearMissCount,
+            'mainStoreVal' => $mainStoreVal,
+            'dispensaryVal' => $dispensaryVal,
+            'totalDualVal' => $totalDualVal,
+            'auditLogs' => $auditLogs
         ]);
     }
 }

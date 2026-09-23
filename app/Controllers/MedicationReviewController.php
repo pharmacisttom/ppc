@@ -28,8 +28,7 @@ class MedicationReviewController
 
         View::render('review/index', [
             'pageTitle' => 'การทบทวนวรรณกรรมยาและการค้นหา DRP (Medication Review)',
-            'reviews' => $reviews,
-            'isTraining' => JhcisGateway::isTrainingMode()
+            'reviews' => $reviews
         ]);
     }
 
@@ -38,17 +37,29 @@ class MedicationReviewController
      */
     public function create(): void
     {
-        $pid = (int)Request::get('pid', 101);
+        $pid = (int)Request::get('pid', 0);
+        if ($pid <= 0) {
+            $recent = JhcisGateway::getRecentPatients(1);
+            $pid = !empty($recent) ? (int)$recent[0]['pid'] : 0;
+        }
+
         $patient = JhcisGateway::getPatient($pid);
 
         if (!$patient) {
             Session::flash('error', 'ไม่พบข้อมูลผู้ป่วย');
-            Response::redirect('/hos/patients');
+            Response::redirect('/pcc/patients');
+            return;
         }
 
         $allergies = JhcisGateway::getPatientAllergies($pid);
         $chronicConditions = JhcisGateway::getPatientChronicDiseases($pid);
         $medications = $patient['current_medications'] ?? [];
+        if (empty($medications)) {
+            $timeline = JhcisGateway::getPatientMedicationTimeline($pid);
+            if (!empty($timeline)) {
+                $medications = $timeline[0]['medications'] ?? [];
+            }
+        }
 
         View::render('review/create', [
             'pageTitle' => 'จัดทำบันทึก Medication Review & DRP: ' . $patient['full_name'],
@@ -144,12 +155,12 @@ class MedicationReviewController
             Audit::log('REVIEW_CREATE', 'review', (string)$reviewId, $pid, null, null, 'Created structured medication review with DRPs');
 
             Session::flash('success', 'บันทึกการทำ Medication Review และปัญหา DRP สำเร็จ');
-            Response::redirect('/hos/patients/' . $pid);
+            Response::redirect('/pcc/patients/' . $pid);
         } catch (\Exception $e) {
             $db->rollBack();
             error_log("Medication review store error: " . $e->getMessage());
             Session::flash('error', 'เกิดข้อผิดพลาดในการบันทึก: ' . $e->getMessage());
-            Response::redirect('/hos/reviews/create?pid=' . $pid);
+            Response::redirect('/pcc/reviews/create?pid=' . $pid);
         }
     }
 
@@ -170,7 +181,7 @@ class MedicationReviewController
 
         if (!$review) {
             Session::flash('error', 'ไม่พบรายการทบทวนยา');
-            Response::redirect('/hos/reviews');
+            Response::redirect('/pcc/reviews');
         }
 
         $stmtProb = $db->prepare("SELECT * FROM medication_review_problems WHERE review_id = :id");

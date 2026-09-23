@@ -652,3 +652,515 @@ a:hover {
         box-shadow: none !important;
     }
 }
+
+/* ==========================================================================
+   Gridle Agency Design System (Guided Onboarding & Smart Dashboards)
+   ========================================================================== */
+
+/* Welcome Agency Banner */
+.gridle-welcome-banner {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    color: #ffffff;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.gridle-welcome-banner::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, rgba(13, 148, 136, 0.25) 0%, rgba(13, 148, 136, 0) 70%);
+    pointer-events: none;
+}
+
+.gridle-agency-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: #ccfbf1;
+    margin-bottom: 10px;
+}
+
+.gridle-welcome-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.gridle-welcome-subtitle {
+    font-size: 13.5px;
+    color: #94a3b8;
+    margin: 6px 0 0 0;
+    max-width: 640px;
+    line-height: 1.5;
+}
+
+.gridle-telemetry-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #34d399;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Quick Action Strip */
+.gridle-quick-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.gridle-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 10px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #1e293b;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.gridle-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    border-color: var(--primary);
+    color: var(--primary-dark);
+}
+
+.gridle-action-btn.primary {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+}
+
+.gridle-action-btn.primary:hover {
+    color: #ffffff;
+    box-shadow: 0 6px 20px rgba(13, 148, 136, 0.35);
+}
+
+/* Guided Onboarding Checklist Card */
+.gridle-onboarding-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    margin-bottom: 24px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.gridle-onboarding-header {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.gridle-progress-track {
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 9999px;
+    overflow: hidden;
+    width: 220px;
+    margin-top: 6px;
+}
+
+.gridle-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #059669);
+    border-radius: 9999px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gridle-step-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.gridle-step-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.15s ease;
+}
+
+.gridle-step-item:last-child {
+    border-bottom: none;
+}
+
+.gridle-step-item:hover {
+    background: #f8fafc;
+}
+
+.gridle-step-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+}
+
+.gridle-step-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.gridle-step-icon.done {
+    background: #ecfdf5;
+    color: #059669;
+    border: 2px solid #a7f3d0;
+}
+
+.gridle-step-icon.pending {
+    background: #fffbeb;
+    color: #d97706;
+    border: 2px dashed #fde68a;
+}
+
+.gridle-step-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.gridle-step-desc {
+    font-size: 12.5px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* Smart Stat Widget (Gridle Style) */
+.gridle-stat-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-lg);
+    padding: 20px 22px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.gridle-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px -4px rgba(15, 23, 42, 0.08);
+    border-color: #cbd5e1;
+}
+
+.gridle-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.gridle-stat-card.primary::before { background: var(--primary); }
+.gridle-stat-card.warning::before { background: var(--warning); }
+.gridle-stat-card.success::before { background: var(--success); }
+.gridle-stat-card.danger::before { background: var(--danger); }
+.gridle-stat-card.purple::before { background: #8b5cf6; }
+
+.gridle-stat-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: #0f172a;
+    line-height: 1.1;
+    margin-top: 8px;
+}
+
+.gridle-stat-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #f1f5f9;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Patient Card Grid */
+.gridle-patient-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+}
+
+.gridle-patient-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.gridle-patient-card:hover {
+    border-color: var(--primary);
+    background: #f8fafc;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(13, 148, 136, 0.1);
+}
+
+.gridle-patient-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ccfbf1;
+    color: #0f766e;
+    font-weight: 700;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Gridle & BHPCU Dashboard Components */
+.gridle-welcome-banner {
+    background: linear-gradient(135deg, #4a154b 0%, #3b0764 50%, #0f766e 100%);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    color: #ffffff;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(74, 21, 75, 0.2);
+}
+
+.gridle-agency-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 12.5px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.gridle-welcome-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+.gridle-welcome-subtitle {
+    font-size: 13.5px;
+    color: #f1f5f9;
+    max-width: 680px;
+    line-height: 1.45;
+}
+
+.gridle-telemetry-badge {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid #10b981;
+    color: #ffffff;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Quick Action Pills */
+.gridle-quick-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.gridle-action-btn {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 30px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.gridle-action-btn:hover {
+    border-color: #4a154b;
+    color: #4a154b;
+    background: #fdf4ff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(74, 21, 75, 0.1);
+}
+
+.gridle-action-btn.primary {
+    background: #4a154b;
+    color: #ffffff;
+    border-color: #4a154b;
+}
+
+.gridle-action-btn.primary:hover {
+    background: #3b0764;
+    color: #ffffff;
+}
+
+/* Agency Guided Onboarding Card */
+.gridle-onboarding-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-lg);
+    padding: 18px 22px;
+    margin-bottom: 22px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+}
+
+.gridle-onboarding-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gridle-progress-track {
+    width: 140px;
+    height: 8px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.gridle-progress-fill {
+    height: 100%;
+    background: #10b981;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.gridle-step-list {
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 12px;
+}
+
+.gridle-step-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md);
+}
+
+.gridle-step-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.gridle-step-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.gridle-step-icon.done {
+    background: #ecfdf5;
+    color: #059669;
+    border: 1px solid #a7f3d0;
+}
+
+.gridle-step-icon.pending {
+    background: #fffbeb;
+    color: #d97706;
+    border: 1px solid #fde68a;
+}
+
+.gridle-step-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.gridle-step-desc {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+

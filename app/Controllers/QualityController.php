@@ -123,11 +123,11 @@ class QualityController
             Audit::log('QUALITY_ASSESS', 'quality', (string)$criterionId, null, null, null, "Updated criterion {$criterionId} to status: {$status}");
 
             Session::flash('success', 'บันทึกการประเมินความพร้อมตามมาตรฐานเรียบร้อยแล้ว');
-            Response::redirect('/hos/quality');
+            Response::redirect('/pcc/quality');
         } catch (\Exception $e) {
             error_log("Assessment update error: " . $e->getMessage());
             Session::flash('error', 'เกิดข้อผิดพลาดในการบันทึก: ' . $e->getMessage());
-            Response::redirect('/hos/quality');
+            Response::redirect('/pcc/quality');
         }
     }
 

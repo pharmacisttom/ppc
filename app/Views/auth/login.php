@@ -7,7 +7,7 @@ use App\Core\CSRF;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle ?? 'เข้าสู่ระบบ') ?> — PCU Smart Pharmacy</title>
-    <link rel="stylesheet" href="/hos/assets/css/style.css">
+    <link rel="stylesheet" href="/pcc/assets/css/style.css">
     <style>
         body {
             display: flex;
@@ -51,47 +51,23 @@ use App\Core\CSRF;
         .login-body {
             padding: 28px;
         }
-        .demo-roles {
+        .prod-security-notice {
             margin-top: 24px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
-        }
-        .demo-roles h4 {
+            padding: 14px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius-md);
             font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-            text-align: center;
+            color: #475569;
+            line-height: 1.5;
         }
-        .demo-btn-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-        .demo-btn {
-            background: #f1f5f9;
-            border: 1px solid #cbd5e1;
-            padding: 8px 10px;
-            border-radius: var(--radius-sm);
-            font-size: 12px;
-            cursor: pointer;
-            text-align: left;
-            transition: all 0.15s ease;
-        }
-        .demo-btn:hover {
-            background: var(--primary-light);
-            border-color: var(--primary);
-            color: var(--primary-dark);
-        }
-        .demo-btn strong {
-            display: block;
-            font-size: 12px;
-            color: var(--text-primary);
-        }
-        .demo-btn span {
-            font-size: 11px;
-            color: var(--text-muted);
+        .prod-security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #0f766e;
+            font-weight: 700;
+            margin-bottom: 6px;
         }
     </style>
 </head>
@@ -119,7 +95,7 @@ use App\Core\CSRF;
             </div>
         <?php endif; ?>
 
-        <form action="/hos/login" method="POST" id="loginForm">
+        <form action="/pcc/login" method="POST" id="loginForm">
             <?= CSRF::field() ?>
             <div class="form-group">
                 <label class="form-label" for="username">ชื่อผู้ใช้งาน (Username)</label>
@@ -136,41 +112,21 @@ use App\Core\CSRF;
             </button>
         </form>
 
-        <div class="demo-roles">
-            <h4>⚡ บัญชีทดสอบระบบ (คลิกเพื่อเข้าใช้งานทันที)</h4>
-            <div class="demo-btn-grid">
-                <button type="button" class="demo-btn" onclick="fillLogin('pcu.pharm', 'Password@123')">
-                    <strong>ภญ.กานดา (เภสัชกร)</strong>
-                    <span>บทบาท เภสัชกรปฐมภูมิ</span>
-                </button>
-                <button type="button" class="demo-btn" onclick="fillLogin('nurse.somjai', 'Password@123')">
-                    <strong>พว.สมใจ (พยาบาล)</strong>
-                    <span>บทบาท พยาบาลวิชาชีพ</span>
-                </button>
-                <button type="button" class="demo-btn" onclick="fillLogin('tech.wirat', 'Password@123')">
-                    <strong>นายวิรัช (จพ.เภสัช)</strong>
-                    <span>บทบาท เจ้าพนักงานยา</span>
-                </button>
-                <button type="button" class="demo-btn" onclick="fillLogin('admin', 'Password@123')">
-                    <strong>ภก.สุรศักดิ์ (Admin)</strong>
-                    <span>บทบาท ผู้ดูแลระบบสูงสุด</span>
-                </button>
+        <div class="prod-security-notice">
+            <div class="prod-security-badge">
+                <span>🛡️</span>
+                <span>ระบบใช้งานจริง (Live Production Environment)</span>
+            </div>
+            <div>
+                เชื่อมต่อฐานข้อมูล JHCIS แบบ <strong>Read-Only 100%</strong> เพื่อความปลอดภัยสูงสุดของข้อมูลผู้รับบริการ และบันทึกประวัติการเข้าใช้งานตามมาตรฐานความมั่นคงปลอดภัยสารสนเทศ สธ.
             </div>
         </div>
 
         <p style="text-align: center; font-size: 11px; color: var(--text-muted); margin-top: 18px;">
-            🔒 รองรับการเข้ารหัสข้อมูลตามมาตรฐาน PDPA & JHCIS Isolation Gateway
+            🔒 รองรับการคุ้มครองข้อมูลส่วนบุคคลตามมาตรฐาน PDPA & JHCIS Isolation Gateway
         </p>
     </div>
 </div>
-
-<script>
-function fillLogin(u, p) {
-    document.getElementById('username').value = u;
-    document.getElementById('password').value = p;
-    document.getElementById('loginForm').submit();
-}
-</script>
 
 </body>
 </html>

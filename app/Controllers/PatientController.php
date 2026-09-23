@@ -23,13 +23,14 @@ class PatientController
         if (!empty($q)) {
             $patients = JhcisGateway::searchPatients($q);
             Audit::log('PATIENT_SEARCH', 'patient', null, null, null, null, "Searched query: {$q}");
+        } else {
+            $patients = JhcisGateway::getRecentPatients(25);
         }
 
         View::render('patient/index', [
             'pageTitle' => 'ค้นหาผู้รับบริการ — PCU Smart Pharmacy',
             'query' => $q,
-            'patients' => $patients,
-            'isTraining' => JhcisGateway::isTrainingMode()
+            'patients' => $patients
         ]);
     }
 
@@ -43,7 +44,7 @@ class PatientController
 
         if (!$patient) {
             Session::flash('error', 'ไม่พบข้อมูลผู้รับบริการรหัส PID: ' . htmlspecialchars($pid));
-            Response::redirect('/hos/patients');
+            Response::redirect('/pcc/patients');
         }
 
         // Audit view for PDPA compliance
@@ -96,8 +97,7 @@ class PatientController
             'currentMedications' => $currentMedications,
             'safetyFlags' => $safetyFlags,
             'reviews' => $reviews,
-            'hmrs' => $hmrs,
-            'isTraining' => JhcisGateway::isTrainingMode()
+            'hmrs' => $hmrs
         ]);
     }
 }

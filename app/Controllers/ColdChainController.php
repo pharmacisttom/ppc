@@ -87,11 +87,89 @@ class ColdChainController
             Audit::log('COLDCHAIN_LOG', 'coldchain', (string)$unitId, null, null, null, "Recorded temp {$currentTemp}C (Excursion: {$isExcursion})");
 
             Session::flash('success', 'บันทึกอุณหภูมิตู้เย็นเรียบร้อยแล้ว' . ($isExcursion ? ' ⚠️ ตรวจพบอุณหภูมิหลุดเกณฑ์และบันทึกมาตรการแก้ไขแล้ว' : ''));
-            Response::redirect('/hos/cold-chain');
+            Response::redirect('/pcc/cold-chain');
         } catch (\Exception $e) {
             error_log("Coldchain log error: " . $e->getMessage());
             Session::flash('error', 'เกิดข้อผิดพลาดในการบันทึก: ' . $e->getMessage());
-            Response::redirect('/hos/cold-chain');
+            Response::redirect('/pcc/cold-chain');
         }
+    }
+
+    /**
+     * Update Cold Chain Unit Master Information and Record Audit Trail Log
+     */
+    public function updateUnit(): void
+    {
+        $unitId = (int)Request::post('unit_id', 0);
+        $unitCode = trim(Request::post('unit_code', ''));
+        $unitName = trim(Request::post('unit_name', ''));
+        $minTemp = (float)Request::post('min_temp', 2.0);
+        $maxTemp = (float)Request::post('max_temp', 8.0);
+        $modelInfo = trim(Request::post('model_info', ''));
+        $isActive = (int)Request::post('is_active', 1);
+
+        if ($unitId <= 0 || empty($unitName)) {
+            Session::flash('error', 'กรุณาระบุชื่อตู้เย็นหรืออุปกรณ์ควบคุมความเย็น');
+            Response::redirect('/pcc/cold-chain');
+            return;
+        }
+
+        $db = Database::getAppDb();
+
+        try {
+            // Fetch previous state
+            $stmtBefore = $db->prepare("SELECT * FROM cold_chain_units WHERE unit_id = :id");
+            $stmtBefore->execute([':id' => $unitId]);
+            $before = $stmtBefore->fetch(\PDO::FETCH_ASSOC);
+
+            if (!$before) {
+                Session::flash('error', 'ไม่พบข้อมูลตู้เย็นที่ต้องการแก้ไข');
+                Response::redirect('/pcc/cold-chain');
+                return;
+            }
+
+            $stmt = $db->prepare("
+                UPDATE cold_chain_units
+                SET unit_code = :ucode,
+                    unit_name = :uname,
+                    min_temp = :min_t,
+                    max_temp = :max_t,
+                    model_info = :model,
+                    is_active = :active
+                WHERE unit_id = :id
+            ");
+
+            $stmt->execute([
+                ':ucode' => $unitCode,
+                ':uname' => $unitName,
+                ':min_t' => $minTemp,
+                ':max_t' => $maxTemp,
+                ':model' => $modelInfo,
+                ':active' => $isActive,
+                ':id' => $unitId
+            ]);
+
+            // Fetch after state
+            $stmtAfter = $db->prepare("SELECT * FROM cold_chain_units WHERE unit_id = :id");
+            $stmtAfter->execute([':id' => $unitId]);
+            $after = $stmtAfter->fetch(\PDO::FETCH_ASSOC);
+
+            // Record into Audit Logs
+            Audit::log(
+                'COLD_CHAIN_UNIT_UPDATED',
+                'cold_chain_units',
+                (string)$unitId,
+                null,
+                $before,
+                $after,
+                "แก้ไขข้อมูลตู้เย็นควบคุมความเย็น: {$unitName} ({$unitCode})"
+            );
+
+            Session::flash('success', "บันทึกการแก้ไขข้อมูลตู้เย็น [{$unitName}] และบันทึกประวัติ Log เรียบร้อยแล้ว");
+        } catch (\Throwable $e) {
+            Session::flash('error', 'เกิดข้อผิดพลาดในการแก้ไขข้อมูล: ' . $e->getMessage());
+        }
+
+        Response::redirect('/pcc/cold-chain');
     }
 }

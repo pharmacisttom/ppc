@@ -71,7 +71,7 @@
      ```
 
 4. **เริ่มใช้งาน:**
-   - เปิดบราวเซอร์ไปที่: `http://localhost/hos`
+   - เปิดบราวเซอร์ไปที่: `http://localhost/pcc`
    - บัญชีผู้ใช้เริ่มต้น (Default Seed Users):
      - **Pharmacist (เภสัชกร):** `pharmacist` / `password123`
      - **Nurse (พยาบาลวิชาชีพ):** `nurse` / `password123`

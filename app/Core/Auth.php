@@ -40,12 +40,13 @@ class Auth
             $user = $stmt->fetch();
 
             if ($user) {
-                // Fetch roles
+                // Fetch roles with access level
                 $roleStmt = $db->prepare("
-                    SELECT r.role_name, r.display_name
+                    SELECT r.role_id, r.role_name, r.display_name, r.access_level, r.level_name
                     FROM roles r
                     JOIN user_roles ur ON r.role_id = ur.role_id
                     WHERE ur.user_id = :id
+                    ORDER BY r.access_level ASC
                 ");
                 $roleStmt->execute([':id' => $user['user_id']]);
                 $user['roles'] = $roleStmt->fetchAll();
@@ -157,6 +158,48 @@ class Auth
         }
 
         return in_array($permissionCode, self::$currentPermissions, true);
+    }
+
+    /**
+     * Get user's highest security/access level (1 = highest, 5 = lowest)
+     */
+    public static function accessLevel(): int
+    {
+        $user = self::user();
+        if (!$user || empty($user['roles'])) {
+            return 99;
+        }
+        $minLevel = 99;
+        foreach ($user['roles'] as $r) {
+            $lvl = (int)($r['access_level'] ?? 3);
+            if ($lvl < $minLevel) {
+                $minLevel = $lvl;
+            }
+        }
+        return $minLevel;
+    }
+
+    /**
+     * Get user's primary level display name
+     */
+    public static function levelName(): string
+    {
+        $user = self::user();
+        if (!$user || empty($user['roles'])) {
+            return 'ผู้ใช้งานทั่วไป';
+        }
+        return $user['roles'][0]['level_name'] ?? ('ระดับ ' . self::accessLevel());
+    }
+
+    /**
+     * Check if user meets minimum access level (e.g. level <= $maxAllowedLevelNumber)
+     */
+    public static function canAccessLevel(int $maxAllowedLevelNumber): bool
+    {
+        if (self::hasRole('SUPER_ADMIN')) {
+            return true;
+        }
+        return self::accessLevel() <= $maxAllowedLevelNumber;
     }
 
     /**

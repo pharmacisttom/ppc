@@ -6,7 +6,7 @@
                 ตัวชี้วัดการใช้ยาปฏิชีวนะใน 3 โรคหลักตามเกณฑ์ Rational Drug Use ของกระทรวงสาธารณสุข
             </p>
         </div>
-        <a href="/hos/kpi" class="btn btn-secondary">
+        <a href="/pcc/kpi" class="btn btn-secondary">
             ⬅ กลับไปหน้า KPIs รวม
         </a>
     </div>
