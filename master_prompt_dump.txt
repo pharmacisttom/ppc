@@ -1,0 +1,1199 @@
+<USER_REQUEST>
+MASTER PROMPT
+PCU / รพ.สต. SMART PHARMACY & MEDICATION MANAGEMENT SYSTEM
+คุณคือทีมพัฒนาระบบสารสนเทศสุขภาพระดับ Senior/Enterprise ประกอบด้วย
+Senior Healthcare System Architect
+Primary Care Pharmacist
+Medication Safety Specialist
+Full Stack Developer
+Database Architect
+API Integration Engineer
+UX/UI Designer
+Cybersecurity Engineer
+Data Analyst
+Quality Improvement Specialist
+QA/UAT Engineer
+DevOps Engineer
+ภารกิจคือออกแบบและพัฒนา
+“ระบบบริหารจัดการด้านยาและเภสัชกรรมปฐมภูมิสำหรับโรงพยาบาลส่งเสริมสุขภาพตำบล”
+ชื่อระบบเบื้องต้น:
+PCU Smart Pharmacy
+แนวคิด:
+One Patient – One Pharmaceutical Profile – One Medication Plan – One Primary Care Network
+ระบบต้องไม่เป็นเพียงโปรแกรมจ่ายยา แต่ต้องสนับสนุน
+การบริหารจัดการระบบยา
+Medication Safety
+Pharmaceutical Care
+Rational Drug Use
+Medication Reconciliation
+Drug Allergy
+Medication Review
+Chronic Disease Medication Management
+Home Medication Review
+Drug Inventory
+Drug Procurement / Receiving
+Drug Storage
+Expiry / Lot Management
+Cold Chain
+High Alert Medication
+LASA
+Emergency Medication
+Drug Information
+Patient Counseling
+Referral / Continuity of Care
+Community Medication Safety
+Quality Indicators
+Evidence Management
+Self Assessment
+Audit / Quality Improvement
+==================================================
+STANDARD FRAMEWORK
+==================================================
+ก่อนออกแบบระบบ ให้ศึกษามาตรฐานและ Mapping Requirement เข้ากับระบบ โดยใช้มาตรฐานปัจจุบันที่เกี่ยวข้องเป็นหลัก ได้แก่
+มาตรฐานหน่วยบริการปฐมภูมิ พ.ศ. 2568–2570
+แนวทางการจัดการด้านยาในระบบบริการปฐมภูมิ
+มาตรฐานวิชาชีพเภสัชกรรมปฐมภูมิ
+Rational Drug Use / RDU Community
+Medication Safety
+ระบบคุณภาพบริการปฐมภูมิ
+แนวทาง Telepharmacy เมื่อเกี่ยวข้อง
+PDPA และ Cybersecurity
+แนวทาง/มาตรฐานอื่นของกระทรวงสาธารณสุขที่เกี่ยวข้อง
+หากพบเกณฑ์ “รพ.สต.ติดดาว” รุ่นเก่า:
+ห้ามนำมาใช้แทนมาตรฐานปัจจุบันโดยอัตโนมัติ
+ให้ใช้เพื่อ Historical Mapping หรือ Crosswalk เท่านั้น
+สร้างตาราง:
+STANDARD REQUIREMENT
+→ SYSTEM MODULE
+→ DATA SOURCE
+→ KPI
+→ EVIDENCE
+→ RESPONSIBLE PERSON
+→ ASSESSMENT STATUS
+==================================================
+2. QUALITY FRAMEWORK
+ระบบต้องรองรับการพัฒนาคุณภาพอย่างน้อยในมิติ
+การนำองค์กรและการจัดการ
+ประชากรเป้าหมาย ชุมชน และผู้มีส่วนได้ส่วนเสีย
+บุคลากร
+ระบบบริการ
+ผลลัพธ์
+แต่ต้องไม่ Hard-code คะแนนหรือเกณฑ์ประเมินที่อาจเปลี่ยนตามปี
+สร้าง
+QUALITY STANDARD ENGINE
+เพื่อให้ Admin สามารถกำหนด:
+standard_year
+standard_version
+category
+criterion
+subcriterion
+requirement
+evidence_required
+weight
+target
+effective_date
+expiry_date
+active
+==================================================
+3. SYSTEM ARCHITECTURE
+ใช้ Architecture:
+JHCIS DATABASE
+READ ONLY
+↓
+JHCIS API GATEWAY
+↓
+PCU SMART PHARMACY
+↓
+APPLICATION DATABASE
+ห้าม Web Browser ต่อ JHCIS MySQL โดยตรง
+ห้าม Web Application ใช้ root account ของ JHCIS
+ข้อมูล JHCIS ต้องอ่านผ่าน API Gateway
+ข้อมูลที่ระบบสร้างใหม่เก็บใน Application Database
+==================================================
+4. JHCIS DATA
+ใช้ JHCIS สำหรับข้อมูล เช่น
+Patient
+Visit
+Diagnosis
+Medication
+Chronic Disease
+Drug Allergy
+Drug Master
+และข้อมูลอื่นที่ตรวจสอบว่ามีจริงในฐาน
+ก่อนสร้าง Query:
+ต้องตรวจ Schema จริง
+ใช้:
+SHOW TABLES
+DESCRIBE
+SHOW CREATE TABLE
+information_schema
+ห้ามเดาชื่อตารางหรือ Column
+==================================================
+5. PATIENT PHARMACEUTICAL PROFILE
+สร้าง Pharmaceutical Profile รายบุคคล
+แสดง:
+ข้อมูลพื้นฐาน
+โรคประจำตัว
+Diagnosis
+Visit Timeline
+ประวัติยา
+รายการยาล่าสุด
+ประวัติแพ้ยา
+Medication Risk
+Medication Review
+Medication Reconciliation
+Pharmaceutical Care
+Adherence
+Home Medication Review
+Herbal / Supplement
+Drug Related Problems
+Intervention
+Outcome
+Follow-up
+Referral
+==================================================
+6. MEDICATION HISTORY
+แสดง Medication Timeline
+Date
+Visit
+Diagnosis
+Drug
+Strength
+Dose
+Frequency
+Quantity
+Unit
+Provider
+สามารถ Filter ตาม:
+ช่วงเวลา
+ยา
+Diagnosis
+Drug Group
+==================================================
+7. DRUG ALLERGY
+สร้าง Drug Allergy Management
+รองรับ:
+Drug
+Reaction
+Severity
+Date
+Source
+Reporter
+Assessment
+Verification Status
+Related Drug
+Cross Sensitivity
+Clinical Note
+หากไม่พบข้อมูล:
+ใช้ข้อความ
+“ไม่พบข้อมูลประวัติแพ้ยาในแหล่งข้อมูลที่เชื่อมต่อ”
+ห้ามสรุปว่า
+“ผู้ป่วยไม่แพ้ยา”
+==================================================
+8. MEDICATION SAFETY ENGINE
+สร้าง Rule Engine สำหรับ Screening
+รองรับ:
+Polypharmacy
+Drug Allergy
+Duplicate Medication
+Drug-Disease Risk
+Renal Risk
+Elderly Medication Risk
+Pediatric Risk
+Pregnancy Risk
+High Alert Medication
+LASA
+Drug Interaction
+Repeated Medication
+Adherence Risk
+Medication Reconciliation Discrepancy
+ระดับ:
+INFO
+REVIEW
+HIGH
+CRITICAL
+แต่ระบบเป็น Decision Support
+ห้ามสั่ง:
+หยุดยา
+เพิ่มยา
+ลดขนาดยา
+เปลี่ยนยา
+โดยอัตโนมัติ
+==================================================
+9. MEDICATION REVIEW
+สร้าง Structured Medication Review
+DRP Category:
+Unnecessary Medication
+Need Additional Therapy
+Ineffective Medication
+Dose Too Low
+Dose Too High
+Adverse Drug Reaction
+Drug Interaction
+Non-Adherence
+Duplicate Therapy
+Administration Problem
+Other
+บันทึก:
+Problem
+Evidence
+Assessment
+Intervention
+Recommendation
+Prescriber Response
+Outcome
+Follow-up
+==================================================
+10. MEDICATION RECONCILIATION
+Workflow:
+Medication History
+↓
+Verification
+↓
+Compare
+↓
+Discrepancy
+↓
+Assessment
+↓
+Intervention
+↓
+Reconciled Medication List
+↓
+Follow-up
+รองรับ:
+Referral
+Hospital Discharge
+กลับจากโรงพยาบาล
+Home Visit
+Transition of Care
+==================================================
+11. PHARMACEUTICAL CARE
+ใช้โครงสร้าง
+Problem
+Assessment
+Plan
+Intervention
+Outcome
+Follow-up
+รองรับ SOAP Note เมื่อเหมาะสม
+สร้าง Pharmaceutical Care Timeline รายผู้ป่วย
+==================================================
+12. CHRONIC DISEASE MEDICATION MANAGEMENT
+รองรับ:
+DM
+HT
+CKD
+Dyslipidemia
+Asthma
+COPD
+Cardiovascular Disease
+และ Chronic Disease อื่นที่กำหนดเพิ่มได้
+เชื่อม:
+Diagnosis
+Medication
+Lab หากมี API
+Adherence
+DRP
+Follow-up
+==================================================
+13. RDU
+สร้าง RDU Module
+รองรับ:
+Antibiotic Use
+NSAID
+Steroid
+Polypharmacy
+Medication Appropriateness
+Community RDU
+Prescription Indicator
+Drug Utilization
+RDU Rule ต้อง Configurable
+มี:
+effective_date
+expiry_date
+reference
+version
+ห้าม Hard-code เกณฑ์นโยบายถาวร
+==================================================
+14. ANTIBIOTIC STEWARDSHIP
+สร้าง Dashboard การใช้ Antibiotic
+ดู:
+จำนวน Visit
+Antibiotic Prescription
+Diagnosis
+Drug
+Trend
+หน่วยบริการ
+กลุ่มอายุ
+และตัวชี้วัดตาม Rule ที่ Admin กำหนด
+==================================================
+15. DRUG INVENTORY
+สร้างระบบคลังยา
+Drug Master
+Stock
+Lot
+Expiry Date
+Location
+Minimum Stock
+Maximum Stock
+Reorder Point
+Safety Stock
+Stock Card
+Movement
+Receiving
+Dispensing
+Adjustment
+Transfer
+Return
+Damage
+Expired
+Inventory Count
+ใช้หลัก FEFO
+First Expired – First Out
+==================================================
+16. DRUG PROCUREMENT
+รองรับ:
+Requisition
+Purchase Request
+Purchase Order Reference
+Receiving
+Supplier
+Invoice
+Lot
+Expiry
+Quantity
+Unit Cost
+Total Cost
+Budget
+หาก รพ.สต.ไม่ได้จัดซื้อเอง ให้สามารถปิด Module Procurement และใช้ระบบเบิกจากแม่ข่ายแทน
+==================================================
+17. DRUG REQUISITION
+รองรับการเบิกยา
+รพ.สต.
+↓
+แม่ข่าย
+↓
+อนุมัติ
+↓
+จัดยา
+↓
+ส่งยา
+↓
+รับยา
+↓
+Stock Update
+สถานะ:
+Draft
+Submitted
+Approved
+Prepared
+Delivered
+Received
+Rejected
+Cancelled
+==================================================
+18. EXPIRY MANAGEMENT
+Dashboard:
+Expired
+≤30 Days
+31–90 Days
+91–180 Days
+180 Days
+สร้าง Alert
+และรายงาน:
+มูลค่ายาใกล้หมดอายุ
+มูลค่ายาหมดอายุ
+แนวโน้มความสูญเสีย
+==================================================
+19. COLD CHAIN
+สร้าง Cold Chain Module
+Temperature Log
+Storage Unit
+Min Temperature
+Max Temperature
+Excursion
+Corrective Action
+Responsible Person
+Evidence
+สามารถออกแบบรองรับ Sensor/API ในอนาคต
+==================================================
+20. HIGH ALERT MEDICATION
+Master HAM
+Storage
+Label
+Warning
+Double Check
+Administration Safety
+Incident
+Audit
+Training
+Evidence
+==================================================
+21. LASA
+สร้าง LASA Management
+Look-Alike
+Sound-Alike
+Tall Man Lettering
+Storage Separation
+Warning Label
+Risk Level
+Mitigation
+Audit
+==================================================
+22. EMERGENCY MEDICATION
+จัดการ Emergency Drug Set
+รายการยา
+จำนวนมาตรฐาน
+Lot
+Expiry
+Inspection Date
+Inspector
+Missing Item
+Corrective Action
+พร้อม Checklist ตรวจตามรอบ
+==================================================
+23. STORAGE QUALITY
+สร้าง Checklist
+Temperature
+Humidity หากใช้
+Light Protection
+Refrigerator
+Controlled Access
+Cleanliness
+Pest Control
+Shelf Organization
+FEFO
+Expired Separation
+Damaged Drug
+Returned Drug
+High Alert Separation
+LASA Separation
+Evidence Photo
+Corrective Action
+==================================================
+24. HOME MEDICATION REVIEW
+รองรับ:
+Home Visit
+Actual Medication
+Medication Found at Home
+Expired Drug
+Duplicate Drug
+Incorrect Use
+Storage Problem
+Herbal Medicine
+Supplement
+Adherence
+Caregiver
+DRP
+Intervention
+Follow-up
+ออกแบบรองรับ:
+Photo
+GPS
+Offline Mode
+ในอนาคต
+==================================================
+25. ADHERENCE
+สร้าง Medication Adherence Assessment
+ไม่ผูกกับแบบประเมินเดียว
+Admin สามารถกำหนด Assessment Tool ได้
+บันทึก:
+Score
+Interpretation
+Problem
+Cause
+Intervention
+Follow-up
+==================================================
+26. PATIENT COUNSELING
+บันทึก:
+Drug Counseling
+Device Technique
+Insulin
+Inhaler
+Warfarin/High Risk Therapy หากเกี่ยวข้อง
+Antibiotic Counseling
+Adherence
+Storage
+Warning
+Teach-back Result
+==================================================
+27. TELEPHARMACY
+ออกแบบ Module รองรับ Telepharmacy
+Appointment
+Consent
+Pharmacist
+Patient
+Video/Communication Reference
+Medication Review
+Counseling
+Intervention
+Outcome
+Follow-up
+Audit
+แต่ไม่ต้องผูกกับผู้ให้บริการ Video รายใดตั้งแต่ต้น
+==================================================
+28. REFERRAL / CONTINUITY
+สร้าง Medication Referral
+รพ.สต.
+↔ โรงพยาบาลแม่ข่าย
+↔ ทีมเภสัชกรรม
+↔ Home Care
+ข้อมูล:
+Reason
+Medication Problem
+Current Medication
+Allergy
+DRP
+Action Taken
+Recommendation
+Referral Status
+Response
+Outcome
+==================================================
+29. INCIDENT / MEDICATION ERROR
+สร้าง Medication Incident Module
+Near Miss
+Prescribing Error
+Transcribing Error
+Dispensing Error
+Administration Error
+Monitoring Error
+Storage Error
+Other
+รองรับ:
+Severity
+Immediate Action
+RCA
+Corrective Action
+Preventive Action
+Responsible Person
+Due Date
+Closure
+==================================================
+30. QUALITY IMPROVEMENT
+สร้าง CQI / PDCA Module
+Problem
+Baseline
+Target
+Plan
+Do
+Check
+Act
+Indicator
+Result
+Evidence
+Lesson Learned
+สามารถเชื่อม Medication Incident และ KPI ได้
+==================================================
+31. STANDARD SELF-ASSESSMENT
+สร้างระบบประเมินตนเอง
+เลือก:
+Standard
+Year
+Version
+Category
+Criterion
+แสดง:
+Requirement
+Guidance
+Evidence Required
+Current Status
+Responsible Person
+Due Date
+Evidence
+Gap
+Corrective Action
+สถานะ:
+Not Assessed
+Not Started
+In Progress
+Evidence Missing
+Ready
+Passed Internal Review
+Need Improvement
+==================================================
+32. EVIDENCE CENTER
+สร้าง Evidence Repository
+รองรับ:
+PDF
+Word
+Excel
+Image
+URL
+Meeting Record
+Policy
+SOP
+Report
+Photo
+Training Record
+สามารถ Tag:
+Standard
+Criterion
+Year
+Department
+Responsible Person
+Expiry/Review Date
+ห้าม Duplicate Evidence โดยไม่จำเป็น
+Evidence หนึ่งรายการสามารถเชื่อมหลาย Criterion ได้
+==================================================
+33. SOP / DOCUMENT CONTROL
+สร้าง Document Control
+Document Code
+Title
+Version
+Effective Date
+Review Date
+Owner
+Approver
+Status
+File
+Revision History
+รองรับ:
+Policy
+SOP
+Work Instruction
+Form
+Checklist
+Guideline
+==================================================
+34. PERSONNEL COMPETENCY
+สร้าง Training / Competency Module
+Staff
+Role
+Required Competency
+Training
+Assessment
+Score
+Certificate
+Expiry
+Retraining
+เชื่อมกับมาตรฐานด้านระบบยา
+==================================================
+35. QUALITY KPI
+สร้าง KPI Engine
+KPI ต้อง Configurable
+ประกอบด้วย:
+name
+description
+numerator
+denominator
+target
+unit
+frequency
+source
+owner
+standard_reference
+effective_date
+expiry_date
+ระบบคำนวณจากข้อมูลอัตโนมัติเมื่อทำได้
+และอนุญาต Manual Entry พร้อม Evidence เมื่อคำนวณไม่ได้
+==================================================
+36. EXECUTIVE DASHBOARD
+Dashboard ระดับ รพ.สต.
+แสดง:
+Medication Safety
+Allergy
+Polypharmacy
+Medication Review
+DRP
+Pharmaceutical Care
+RDU
+Antibiotic
+Stock
+Expiry
+Stockout
+Cold Chain
+HAM
+LASA
+Medication Incident
+Follow-up
+Quality KPI
+Assessment Readiness
+Evidence Completion
+ใช้:
+Trend
+KPI Card
+Chart
+Risk Matrix
+Traffic Light
+==================================================
+37. DISTRICT / NETWORK DASHBOARD
+ออกแบบ Multi-Facility Ready
+รองรับ:
+รพ.สต.
+โรงพยาบาลแม่ข่าย
+เภสัชกรระดับอำเภอ
+Admin เครือข่าย
+สามารถเปรียบเทียบ:
+Stock
+Expiry
+RDU
+Medication Safety
+Quality KPI
+Assessment Gap
+แต่ต้องใช้ Role/Permission และ Data Scope
+==================================================
+38. ASSESSMENT READINESS
+สร้างหน้า
+QUALITY READINESS
+แสดง:
+จำนวนเกณฑ์ทั้งหมด
+Complete
+Incomplete
+Evidence Missing
+Expired Evidence
+Need Improvement
+Corrective Action Overdue
+พร้อม Drill-down
+ห้ามระบบประกาศว่า
+“ผ่านมาตรฐาน”
+โดยอัตโนมัติหากไม่มีเกณฑ์และกระบวนการรับรองที่ถูกต้อง
+ใช้คำ:
+“ความพร้อมตามข้อมูลที่บันทึกในระบบ”
+==================================================
+39. REPORTS
+สร้างรายงานอย่างน้อย:
+Medication Profile
+Medication History
+Drug Allergy
+Polypharmacy
+Medication Review
+Medication Reconciliation
+Pharmaceutical Care
+DRP
+Home Medication Review
+RDU
+Antibiotic
+Stock Balance
+Stock Card
+Expiry
+Stockout
+Requisition
+Receiving
+Cold Chain
+HAM
+LASA
+Medication Incident
+Quality KPI
+Self Assessment
+Evidence Status
+Corrective Action
+รองรับ:
+Date Filter
+Facility
+Patient Group
+Drug
+CSV
+Excel-compatible export
+Print
+PDF-ready HTML
+==================================================
+40. ROLE BASED ACCESS CONTROL
+Role ตัวอย่าง:
+Super Admin
+District Pharmacist
+Hospital Pharmacist
+PCU Pharmacist
+Pharmacy Technician
+Nurse
+Public Health Officer
+Facility Admin
+Quality Officer
+Data Officer
+Viewer
+Auditor
+สร้าง Permission แบบละเอียด
+เช่น:
+patient.view
+medication.view
+allergy.view
+risk.view
+review.create
+review.approve
+stock.view
+stock.adjust
+requisition.create
+requisition.approve
+quality.assess
+evidence.upload
+evidence.review
+report.export
+user.manage
+settings.manage
+audit.view
+==================================================
+41. AUDIT LOG
+บันทึก:
+User
+Action
+Module
+Record
+Timestamp
+IP
+Result
+Reason เมื่อเหมาะสม
+Audit:
+Login
+Logout
+Patient View
+Medication View
+Allergy View
+Create
+Update
+Delete
+Stock Adjustment
+Approval
+Report Export
+Evidence Upload
+Assessment Change
+User Change
+Setting Change
+==================================================
+42. SECURITY
+ใช้:
+Prepared Statements
+CSRF Protection
+XSS Protection
+Input Validation
+Output Encoding
+Secure Session
+HttpOnly
+SameSite
+Session Regeneration
+RBAC
+Rate Limiting
+Security Headers
+Audit Logging
+Environment Variables
+ห้ามเก็บ Secret ใน Source Code
+Production:
+HTTPS
+APP_DEBUG=false
+==================================================
+43. PRIVACY / PDPA
+ใช้ Minimum Necessary
+Mask CID
+ห้าม Log ข้อมูลสำคัญเกินจำเป็น
+กำหนด Data Access ตาม Role และ Facility
+รองรับ Audit การเข้าดูข้อมูลผู้ป่วย
+==================================================
+44. UI / UX
+ภาษาไทยเป็นหลัก
+Font:
+Sarabun หรือ Noto Sans Thai
+Style:
+Primary Care + Pharmacy Professional
+Responsive:
+Desktop
+Tablet
+Mobile
+Sidebar:
+Dashboard
+ผู้ป่วย
+ยา
+แพ้ยา
+Medication Safety
+Medication Review
+Medication Reconciliation
+Pharmaceutical Care
+Home Medication Review
+RDU
+คลังยา
+เบิกยา
+รับยา
+ยาใกล้หมดอายุ
+Cold Chain
+HAM
+LASA
+Medication Incident
+Quality
+Self Assessment
+Evidence
+KPI
+Reports
+Users
+Audit
+Settings
+==================================================
+45. APPLICATION DATABASE
+ออกแบบฐานข้อมูลอย่างเป็นระบบ
+กลุ่ม Patient Care:
+medication_reviews
+medication_review_problems
+medication_reconciliations
+medication_reconciliation_items
+pharmaceutical_care
+pharmaceutical_care_problems
+home_medication_reviews
+followups
+กลุ่ม Safety:
+risk_rules
+drug_allergy_reviews
+high_alert_drugs
+lasa_drugs
+medication_incidents
+กลุ่ม Inventory:
+drug_items
+stock_locations
+stock_lots
+stock_movements
+requisitions
+requisition_items
+receivings
+receiving_items
+inventory_counts
+กลุ่ม Quality:
+quality_standards
+quality_categories
+quality_criteria
+quality_assessments
+quality_evidence
+corrective_actions
+kpis
+kpi_results
+sop_documents
+training_records
+กลุ่ม System:
+users
+roles
+permissions
+user_roles
+role_permissions
+facilities
+system_settings
+audit_logs
+api_logs
+login_logs
+==================================================
+46. DATA INTEGRITY
+ใช้:
+Primary Key
+Foreign Key
+Unique Constraint
+Index
+Transaction
+Timestamp
+Version/Status
+ห้ามใช้ Free Text แทน Master Data ในจุดที่ควรเป็น Structured Data
+==================================================
+47. TRAINING MODE
+ระบบต้องมี
+APP_MODE=training
+เมื่อ Training Mode:
+ใช้ข้อมูลจำลอง
+แสดง Badge:
+TRAINING MODE
+ห้ามใช้ข้อมูลผู้ป่วยจริง
+Seed Scenario:
+DM
+HT
+CKD
+Polypharmacy
+Drug Allergy
+NSAID Risk
+Medication Reconciliation
+Non-Adherence
+Expired Drug
+Stockout
+Cold Chain Excursion
+LASA
+Medication Incident
+==================================================
+48. AI DEVELOPMENT PROTOCOL
+ทุก Phase ใช้:
+PLAN
+↓
+BUILD
+↓
+RUN
+↓
+TEST
+↓
+FIX
+↓
+VERIFY
+↓
+DOCUMENT
+ห้ามสร้างระบบทั้งหมดในครั้งเดียว
+==================================================
+49. DEVELOPMENT PHASES
+PHASE 0
+Discovery
+PHASE 1
+Architecture
+PHASE 2
+Database
+PHASE 3
+Authentication
+PHASE 4
+RBAC
+PHASE 5
+JHCIS API Integration
+PHASE 6
+Patient Search
+PHASE 7
+Patient Pharmaceutical Profile
+PHASE 8
+Medication History
+PHASE 9
+Drug Allergy
+PHASE 10
+Medication Safety
+PHASE 11
+Medication Review
+PHASE 12
+Medication Reconciliation
+PHASE 13
+Pharmaceutical Care
+PHASE 14
+Chronic Medication Management
+PHASE 15
+Home Medication Review
+PHASE 16
+RDU
+PHASE 17
+Inventory
+PHASE 18
+Requisition / Receiving
+PHASE 19
+Expiry / FEFO
+PHASE 20
+Cold Chain
+PHASE 21
+HAM / LASA
+PHASE 22
+Medication Incident
+PHASE 23
+Quality Standard Engine
+PHASE 24
+Self Assessment
+PHASE 25
+Evidence Center
+PHASE 26
+SOP / Document Control
+PHASE 27
+KPI Engine
+PHASE 28
+Executive Dashboard
+PHASE 29
+District Dashboard
+PHASE 30
+Reports
+PHASE 31
+Security Hardening
+PHASE 32
+Performance
+PHASE 33
+Backup / Restore
+PHASE 34
+UAT
+PHASE 35
+Deployment
+==================================================
+50. IMPORTANT: STANDARD TRACEABILITY
+ทุก Feature ที่สร้างเพื่อรองรับมาตรฐานต้องตอบได้ว่า:
+Requirement ไหน?
+Module ไหน?
+ข้อมูลมาจากไหน?
+ใครรับผิดชอบ?
+Evidence คืออะไร?
+KPI คืออะไร?
+ผลปัจจุบันเป็นอย่างไร?
+Gap คืออะไร?
+Corrective Action คืออะไร?
+สร้าง STANDARD TRACEABILITY MATRIX
+ห้ามสร้าง Feature แล้วอ้างว่ารองรับมาตรฐานโดยไม่มี Mapping
+==================================================
+51. CLINICAL SAFETY
+ระบบนี้เป็น
+Clinical / Pharmaceutical Decision Support
+ไม่ใช่ระบบตัดสินใจรักษาแทนบุคลากร
+ใช้ข้อความ:
+Screening Flag
+Medication Risk
+ควรประเมินเพิ่มเติม
+ต้องทบทวนโดยบุคลากรวิชาชีพ
+Final Decision เป็นของบุคลากรที่ได้รับอนุญาต
+==================================================
+52. DEFINITION OF DONE
+ระบบถือว่าพร้อมเมื่อ:
+Core Medication System ทำงาน
+JHCIS API ทำงาน
+RBAC ทำงาน
+Patient Profile ทำงาน
+Medication Safety ทำงาน
+Inventory ทำงาน
+RDU ทำงาน
+Quality Standard Mapping ทำงาน
+Self Assessment ทำงาน
+Evidence ทำงาน
+KPI ทำงาน
+Audit ทำงาน
+Reports ทำงาน
+Security ผ่าน
+Responsive ผ่าน
+API Failure Handling ผ่าน
+Backup/Restore ผ่าน
+UAT ผ่าน
+Documentation ครบ
+ไม่มี Critical Error
+==================================================
+53. START NOW
+ยังไม่ต้องสร้าง Code ทั้งระบบ
+เริ่มจาก
+PHASE 0 — DISCOVERY & STANDARD MAPPING
+ดำเนินการดังนี้:
+ตรวจ Project ปัจจุบัน
+ตรวจ Technology Stack
+ตรวจ JHCIS API
+ตรวจ JHCIS Schema ที่มีจริง
+ตรวจ Application Database
+ตรวจมาตรฐานหน่วยบริการปฐมภูมิฉบับที่ใช้ในปัจจุบัน
+แยก Requirement เฉพาะด้านระบบยา
+สร้าง Standard Traceability Matrix
+สร้าง Module Map
+สร้าง User Workflow
+สร้าง RBAC Matrix
+สร้าง ER Diagram
+สร้าง API Mapping
+สร้าง KPI Mapping
+สร้าง Evidence Mapping
+สร้าง Gap Analysis
+สร้าง Development Roadmap
+สร้างเอกสาร:
+PROJECT_DISCOVERY.md
+PRIMARY_CARE_STANDARD_MAPPING.md
+PHARMACY_STANDARD_MATRIX.md
+ARCHITECTURE.md
+DATABASE_ERD.md
+API_MAPPING.md
+RBAC_MATRIX.md
+KPI_MATRIX.md
+EVIDENCE_MATRIX.md
+IMPLEMENTATION_PLAN.md
+หลังจากวิเคราะห์เสร็จ:
+รายงานเป็นภาษาไทย
+แยก:
+CRITICAL
+HIGH
+MEDIUM
+LOW
+จากนั้นเสนอ PHASE 1
+ห้ามเริ่ม PHASE 1 จนกว่า PHASE 0 จะมี Architecture และ Standard Mapping ที่ชัดเจน
+
+
+</USER_REQUEST>
+<ADDITIONAL_METADATA>
+The current local time is: 2026-09-23T11:24:59+07:00.
+
+The user's current state is as follows:
+Active Document: c:\xampp\htdocs\hos\index.php (LANGUAGE_PHP)
+Cursor is on line: 250
+Other open documents:
+- c:\xampp\htdocs\hos\index.php (LANGUAGE_PHP)
+</ADDITIONAL_METADATA>
+<USER_SETTINGS_CHANGE>
+The user changed setting `Model Selection` from None to Gemini 3.8 Flash (Medium). No need to comment on this change if the user doesn't ask about it. If reporting what model you are, please use a human readable name instead of the exact string.
+</USER_SETTINGS_CHANGE>
